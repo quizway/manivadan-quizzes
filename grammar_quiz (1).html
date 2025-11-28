@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Grammar Quiz - 16 Questions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.3);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #4ade80;
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .content {
+            padding: 40px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .question-number {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .question-text {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option {
+            background: #f3f4f6;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 18px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            line-height: 1.3;
+        }
+
+        .option:hover {
+            background: #e0e7ff;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .answer-revealed .option {
+            cursor: default;
+        }
+
+        .option.correct {
+            background: #d1fae5;
+            border-color: #10b981;
+            font-weight: 600;
+        }
+
+        .option.incorrect {
+            background: #fee2e2;
+            border-color: #ef4444;
+            opacity: 0.7;
+        }
+
+        .explanation {
+            background: #f0f9ff;
+            border-left: 4px solid #0284c7;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .explanation-label {
+            font-size: 12px;
+            color: #0284c7;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .explanation-text {
+            font-size: 16px;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        .footer {
+            background: #f9fafb;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e5e7eb;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .button:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button.secondary {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .button.secondary:hover {
+            background: #d1d5db;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .slide-info {
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .reveal-btn {
+            background: #10b981;
+        }
+
+        .reveal-btn:hover {
+            background: #059669;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 English Grammar Quiz</h1>
+            <p style="margin-top: 10px; opacity: 0.9;">16 Questions with Instant Answers</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="content" id="content">
+            <!-- Slides will be inserted here -->
+        </div>
+
+        <div class="footer">
+            <div class="slide-info">
+                <span id="slideCounter">Question 1 of 16</span>
+            </div>
+            <div class="button-group">
+                <button class="button secondary" id="prevBtn" onclick="prevSlide()">← Previous</button>
+                <button class="button reveal-btn" id="revealBtn" onclick="revealAnswer()" style="display:none;">Reveal Answer ✓</button>
+                <button class="button" id="nextBtn" onclick="nextSlide()">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz Data
+        const quizData = [
+            {
+                number: 1,
+                question: "Radha ______ for my lost pen, but has not found it.",
+                options: ["looked", "is looking", "was looking", "has been looking"],
+                correct: 1,
+                explanation: "The present continuous tense ('is looking') fits because the action is ongoing and not yet completed."
+            },
+            {
+                number: 2,
+                question: "Complete the following simile: As ______ as ice.",
+                options: ["hard", "cold", "wintry", "chill"],
+                correct: 1,
+                explanation: "The common simile is 'as cold as ice,' describing extreme coldness."
+            },
+            {
+                number: 3,
+                question: "The ______ between the police and the underworld is undermining the law and order in the state.",
+                options: ["understanding", "co-operation", "collusion", "None of these"],
+                correct: 2,
+                explanation: "'Collusion' means secret cooperation for a wrongful purpose, which fits the context."
+            },
+            {
+                number: 4,
+                question: "Gnats → ______ (collective noun)",
+                options: ["assembly", "cluster", "cloud", "crowd"],
+                correct: 2,
+                explanation: "A group of gnats is called a 'cloud.'"
+            },
+            {
+                number: 5,
+                question: "Did the thieves break into the house at midnight? (Change voice)",
+                options: ["Is the house broken into at midnight by the thieves?", "Was the house broken into at midnight by the thieves?", "Has the house been broken into at midnight by the thieves?", "Had the house been broken into at midnight by the thieves?"],
+                correct: 1,
+                explanation: "The correct passive form of the past simple question is 'Was the house broken into...?'"
+            },
+            {
+                number: 6,
+                question: "The officials did not find any reason to draw ______ the investigations any longer. (Phrasal verb)",
+                options: ["in", "on", "up", "out"],
+                correct: 3,
+                explanation: "'Draw out' means to prolong something unnecessarily."
+            },
+            {
+                number: 7,
+                question: "Computers dispense ______ the need for keeping diaries, music players and so many other things. (Preposition)",
+                options: ["of", "off", "for", "with"],
+                correct: 3,
+                explanation: "'Dispense with' means to do away with or eliminate."
+            },
+            {
+                number: 8,
+                question: "Foolishness (Type of noun)",
+                options: ["Abstract noun", "Collective noun", "Common noun", "Proper noun"],
+                correct: 0,
+                explanation: "'Foolishness' refers to a quality or state, not a physical object."
+            },
+            {
+                number: 9,
+                question: "Boswell's Life of Samuel Johnson is considered to be the greatest biography ______ written.",
+                options: ["not", "without", "ever", "never"],
+                correct: 2,
+                explanation: "The phrase 'greatest biography ever written' is the correct idiomatic usage."
+            },
+            {
+                number: 10,
+                question: "I would sing loudly if I was allowed. (Identify the error)",
+                options: ["I would", "sing loudly", "if", "I was allowed"],
+                correct: 3,
+                explanation: "It should be 'if I were allowed' (subjunctive mood)."
+            },
+            {
+                number: 11,
+                question: "The Australian media dumped ______ Ricky Ponting over his team's loss. (Phrasal verb)",
+                options: ["out", "on", "up", "down"],
+                correct: 1,
+                explanation: "'Dump on' means to criticize harshly."
+            },
+            {
+                number: 12,
+                question: "He is a brave boy. (Part of speech for 'brave')",
+                options: ["noun", "verb", "adverb", "adjective"],
+                correct: 3,
+                explanation: "'Brave' describes the noun 'boy,' so it is an adjective."
+            },
+            {
+                number: 13,
+                question: "The government has been widely criticized for its ______ of the economy.",
+                options: ["handling", "hearsay", "hang-up", "height"],
+                correct: 0,
+                explanation: "'Handling of the economy' is the correct phrase."
+            },
+            {
+                number: 14,
+                question: "Bench (Type of noun)",
+                options: ["Abstract noun", "Collective noun", "Common noun", "Proper noun"],
+                correct: 1,
+                explanation: "'Bench' refers to a group of judges collectively."
+            },
+            {
+                number: 15,
+                question: "Leave it to me and let me handle it. (Change voice)",
+                options: ["Let it be left to me and be handled by me.", "Leave it to me and let it be handled by me.", "Let me leave it and handle it.", "I should be allowed to leave it and handle it."],
+                correct: 1,
+                explanation: "This is the correct passive transformation while keeping the meaning intact."
+            },
+            {
+                number: 16,
+                question: "Let us be ______ with it. (Fill in blank)",
+                options: ["do", "done", "doing", "been doing"],
+                correct: 1,
+                explanation: "The phrase 'Let us be done with it' means to finish something completely."
+            }
+        ];
+
+        let currentSlide = 0;
+        let answered = false;
+
+        function renderSlide() {
+            const content = document.getElementById('content');
+            const data = quizData[currentSlide];
+
+            let optionsHTML = '';
+            data.options.forEach((option, index) => {
+                const isCorrect = index === data.correct;
+                let className = 'option';
+                if (answered) {
+                    className += isCorrect ? ' correct' : ' incorrect';
+                }
+                optionsHTML += `<div class="${className}">${String.fromCharCode(65 + index)}) ${option}</div>`;
+            });
+
+            const explanationClass = answered ? 'explanation show' : 'explanation';
+
+            content.innerHTML = `
+                <div class="question-number">Question ${data.number} of 16</div>
+                <div class="question-text">${data.question}</div>
+                <div class="options-container">${optionsHTML}</div>
+                <div class="${explanationClass}">
+                    <div class="explanation-label">✓ Explanation</div>
+                    <div class="explanation-text">${data.explanation}</div>
+                </div>
+            `;
+
+            updateUI();
+        }
+
+        function updateUI() {
+            // Update progress
+            const progress = ((currentSlide + 1) / quizData.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // Update slide counter
+            document.getElementById('slideCounter').textContent = `Question ${currentSlide + 1} of 16`;
+
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === quizData.length - 1;
+            document.getElementById('revealBtn').style.display = answered ? 'none' : 'inline-block';
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function revealAnswer() {
+            answered = true;
+            renderSlide();
+        }
+
+        function nextSlide() {
+            if (currentSlide < quizData.length - 1) {
+                currentSlide++;
+                answered = false;
+                renderSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                answered = false;
+                renderSlide();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === ' ') {
+                e.preventDefault();
+                if (!answered) revealAnswer();
+            }
+        });
+
+        // Initialize
+        renderSlide();
+    </script>
+</body>
+</html>
